@@ -17,7 +17,7 @@ namespace TNE.TestProject.WebApi
         }
 
         public IConfiguration Configuration { get; }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -25,20 +25,20 @@ namespace TNE.TestProject.WebApi
             services.AddSerilog();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "TNE.TestProject.WebApi", Version = "v1"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TNE.TestProject.WebApi", Version = "v1" });
             });
-            
+
             //Регистрация репозитория городов
             services.AddSingleton<RepositoryCity>();
         }
-        
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+                app.UseSwaggerUI(options =>
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
