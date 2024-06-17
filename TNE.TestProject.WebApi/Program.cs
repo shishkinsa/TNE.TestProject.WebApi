@@ -1,6 +1,8 @@
-using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
+using System.Net;
 
 namespace TNE.TestProject.WebApi
 {
@@ -8,7 +10,25 @@ namespace TNE.TestProject.WebApi
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            Log.Information("Starting up");
+
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Unhandled exception");
+            }
+            finally
+            {
+                Log.CloseAndFlushAsync();
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -17,7 +37,7 @@ namespace TNE.TestProject.WebApi
                 {
                     webBuilder
                         .UseStartup<Startup>()
-                        .UseKestrel(options => options.Listen(IPAddress.Any, 10000));
+                        .UseKestrel(options => options.Listen(IPAddress.Loopback, 10001));
                 });
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-
+using Serilog;
 using TNE.TestProject.WebApi.Repository;
 
 namespace TNE.TestProject.WebApi
@@ -21,6 +21,8 @@ namespace TNE.TestProject.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSerilog();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "TNE.TestProject.WebApi", Version = "v1"});
@@ -36,10 +38,11 @@ namespace TNE.TestProject.WebApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TNE.TestProject.WebApi v1"));
+                app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                });
             }
-
-            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
